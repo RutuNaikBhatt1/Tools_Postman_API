@@ -46,3 +46,18 @@ To use this collection:
 2. Set up the required environment variables.
 3. Execute the requests to interact with the Tool Rental API.
 
+# Running Tests with Newman
+
+## Prerequisites
+Before running the tests, ensure that Node.js and npm are installed on your system. If not, download and install them from the official Node.js website: [Node.js Downloads](https://nodejs.org/en/download/).
+
+## Installation
+To install Newman globally, open a terminal and run the following command:
+`npm install -g newman`
+
+Once installed, verify the installation by running:
+`newman -v`
+
+## Running Tests
+To execute all the tests, run the following command in your terminal:
+`newman run postman_collection.json`
