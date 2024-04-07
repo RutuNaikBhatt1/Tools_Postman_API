@@ -1,0 +1,675 @@
+{
+	"info": {
+		"_postman_id": "9b0b4042-2828-46dd-a1d8-9b4d4a8a888d",
+		"name": "Tool Rental",
+		"description": "Documentation link: [https://github.com/vdespa/quick-introduction-to-postman/blob/main/README.md](https://github.com/vdespa/quick-introduction-to-postman/blob/main/README.md)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34105260"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "RegisterApiClient",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"function setAccessToken (){",
+									"// Parse the response body as JSON",
+									"var responseBody = pm.response.json();",
+									"",
+									"// Extract the access token from the response",
+									"var accessToken = responseBody.accessToken;",
+									"",
+									"// Store the access token as a collection variable",
+									"pm.collectionVariables.set(\"accessToken\", accessToken);",
+									"}",
+									"setAccessToken()",
+									"",
+									"//Verify status is 201 OK",
+									"pm.test(\"Verify status is 201\", () => {",
+									"    pm.response.to.have.status(201)",
+									"})",
+									"",
+									"pm.test(\"Verify the access token is stored as collection variable\", () => {",
+									"    var responseJson = pm.response.json();",
+									"    console.log(responseJson.accessToken)",
+									"    pm.expect(responseJson.accessToken).to.equal(pm.collectionVariables.get(\"accessToken\"));",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Function to generate a random string\r",
+									"function generateRandomString(length) {\r",
+									"    var result = '';\r",
+									"    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';\r",
+									"    var charactersLength = characters.length;\r",
+									"    for (var i = 0; i < length; i++) {\r",
+									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));\r",
+									"    }\r",
+									"    return result;\r",
+									"}\r",
+									"\r",
+									"// Generate a random email address\r",
+									"var randomUserName = generateRandomString(5); // You can adjust the length as per your requirement\r",
+									"\r",
+									"var emailId = randomUserName + \"111@example.com\";\r",
+									"\r",
+									"// Set the generated random email address as a collection variable\r",
+									"pm.environment.set(\"clientEmailId\", emailId);\r",
+									"\r",
+									"// Log the generated random email address for reference\r",
+									"console.log(\"Generated random email address:\", emailId);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"clientName\": \"Postman\",\r\n   \"clientEmail\": \"{{clientEmailId}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api-clients",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api-clients"
+							]
+						},
+						"description": "Register a new API client."
+					},
+					"response": []
+				}
+			],
+			"description": "Gets access token."
+		},
+		{
+			"name": "Status - 200",
+			"item": [
+				{
+					"name": "status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verify status is 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"pm.test(\"Verify status is Up\", () => {\r",
+									"    const response = pm.response.json();\r",
+									"    pm.expect(response.status).to.equal('UP');\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/status",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"status"
+							]
+						},
+						"description": "The response should always bring back status 200 Ok."
+					},
+					"response": []
+				}
+			],
+			"description": "This is a sanity test to verify that the endpoint is working as expected"
+		},
+		{
+			"name": "Tools",
+			"item": [
+				{
+					"name": "GetAllTools",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Function to generate a random ID and store it as a collection variable\r",
+									"function generateRandomId() {\r",
+									"    // Parse the response body as JSON\r",
+									"    var responseBody = pm.response.json();\r",
+									"\r",
+									"    // Extract the array of IDs from the response\r",
+									"    var ids = responseBody.map(item => item.id);\r",
+									"\r",
+									"    // Generate a random index to select a random ID from the array\r",
+									"    var randomIndex = Math.floor(Math.random() * ids.length);\r",
+									"\r",
+									"    // Get the random ID using the random index\r",
+									"    var randomId = ids[randomIndex];\r",
+									"\r",
+									"    // Store the random ID as a collection variable\r",
+									"    pm.collectionVariables.set(\"toolId\", randomId);\r",
+									"}\r",
+									"\r",
+									"// Call the function to generate a random ID and store it as a collection variable\r",
+									"generateRandomId();\r",
+									"\r",
+									"// Tests to verify the functionality\r",
+									"pm.test(\"Verify toolId is set\", function () {\r",
+									"    pm.expect(pm.collectionVariables.has(\"toolId\")).to.be.true;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Verify toolId is a valid ID\", function () {\r",
+									"    var toolId = pm.collectionVariables.get(\"toolId\");\r",
+									"    pm.expect(Number.isInteger(toolId) && toolId > 0).to.be.true;\r",
+									"});\r",
+									"//Verify status is 200\r",
+									"pm.test(\"Verify status is 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tools",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tools"
+							],
+							"query": [
+								{
+									"key": "results",
+									"value": "",
+									"description": "Specifies the number of results you want. Must be number between 1 and 20. By default, only 20 tools will be displayed.",
+									"disabled": true
+								},
+								{
+									"key": "category",
+									"value": "",
+									"description": "Specifies the number of results you want. Must be number between 1 and 20. By default, only 20 tools will be displayed.",
+									"disabled": true
+								},
+								{
+									"key": "available",
+									"value": "",
+									"description": "boolean value",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Returns a list of tools from the inventory."
+					},
+					"response": []
+				},
+				{
+					"name": "GetSingleTool",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Verify status is 200",
+									"pm.test(\"Verify status is 200\", () => {",
+									"    pm.response.to.have.status(200);",
+									"})",
+									"",
+									"pm.test(\"Check tool\", () => {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response.id).to.eql(pm.collectionVariables.get('toolId'));",
+									"    pm.expect(response[\"current-stock\"]).to.be.above(0);",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tools/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tools",
+								":id"
+							],
+							"query": [
+								{
+									"key": "available",
+									"value": "false",
+									"description": "boolean value",
+									"disabled": true
+								},
+								{
+									"key": "results",
+									"value": "1",
+									"description": "accepts value between 1 and 20",
+									"disabled": true
+								},
+								{
+									"key": "category",
+									"value": null,
+									"description": "Specifies the category of tools you want to be returned. It can be one of: ladders, plumbing, power-tools, trailers, electric-generators, lawn-care.",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{toolId}}"
+								}
+							]
+						},
+						"description": "Returns a single tool from the inventory."
+					},
+					"response": []
+				}
+			],
+			"description": "Requests to the tools endpoint"
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "CreateAnOrder",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Function to generate a random string\r",
+									"function generateRandomString(length) {\r",
+									"    var result = '';\r",
+									"    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';\r",
+									"    var charactersLength = characters.length;\r",
+									"    for (var i = 0; i < length; i++) {\r",
+									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));\r",
+									"pm.variables.get(\"variable_key\");\r",
+									"    }\r",
+									"    return result;\r",
+									"}\r",
+									"\r",
+									"// Generate a random customer name\r",
+									"var randomUserName = generateRandomString(5); // You can adjust the length as per your requirement\r",
+									"\r",
+									"// Set the generated random user name as an collection variable\r",
+									"pm.collectionVariables.set(\"randomUserName\", randomUserName);\r",
+									"\r",
+									"// Log the generated random user name for reference\r",
+									"console.log(\"Generated random user name:\", randomUserName);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"function setOrderId(){\r",
+									"//Parse response body as JSON\r",
+									"var responseBody = pm.response.json();\r",
+									"\r",
+									"//Extract the orderId from the response\r",
+									"var orderId = responseBody.orderId;\r",
+									"\r",
+									"//Store the orderId as a collection variable\r",
+									"pm.collectionVariables.set('orderId', orderId);\r",
+									"}\r",
+									"setOrderId()\r",
+									"\r",
+									"//Verify status is 201\r",
+									"pm.test(\"Verify status is 201\", () => {\r",
+									"    pm.response.to.have.status(201);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"toolId\": {{toolId}},\r\n\"customerName\": \"{{randomUserName}}\",\r\n\"comment\" : \"This is a test comments.\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/orders",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders"
+							]
+						},
+						"description": "Creates a new order."
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateAnOrder",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Verify status is 204\r",
+									"pm.test(\"Verify status is 204\", () => {\r",
+									"    pm.response.to.have.status(204);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"customerName\": \"{{$randomUserName}}\",\r\n\"comment\": \"This is updated comments\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/orders/:orderId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders",
+								":orderId"
+							],
+							"variable": [
+								{
+									"key": "orderId",
+									"value": "{{orderId}}"
+								}
+							]
+						},
+						"description": "Update the comments by toolId."
+					},
+					"response": []
+				},
+				{
+					"name": "GetAllOrders",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/orders",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders"
+							]
+						},
+						"description": "Requests all orders."
+					},
+					"response": []
+				},
+				{
+					"name": "GetOrderById",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verify the response contains the order Id created in POST - CreateAnOrder request\", () => {",
+									"    var responseJson = pm.response.json();",
+									"    console.log(responseJson.id)",
+									"    pm.expect(responseJson.id).to.equal(pm.collectionVariables.get(\"orderId\"));",
+									"})",
+									"pm.test(\"Verify status is 200\", () => {",
+									"    pm.response.to.have.status(200);",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/orders/:orderId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders",
+								":orderId"
+							],
+							"query": [
+								{
+									"key": "invoice",
+									"value": "true",
+									"description": "Shows the PDF invoice",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "orderId",
+									"value": "{{orderId}}"
+								}
+							]
+						},
+						"description": "Returns a single order."
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteAnOrder",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Verify status is 204\r",
+									"pm.test(\"Verify status is 204\", () => {\r",
+									"    pm.response.to.have.status(204);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/orders/:orderId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders",
+								":orderId"
+							],
+							"variable": [
+								{
+									"key": "orderId",
+									"value": "{{orderId}}"
+								}
+							]
+						},
+						"description": "Delete an order by orderId."
+					},
+					"response": []
+				}
+			],
+			"description": "Returns all orders created by the API client."
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://simple-tool-rental-api.glitch.me"
+		},
+		{
+			"key": "accessToken",
+			"value": ""
+		},
+		{
+			"key": "toolId",
+			"value": ""
+		},
+		{
+			"key": "randomUserName",
+			"value": ""
+		},
+		{
+			"key": "orderId",
+			"value": ""
+		},
+		{
+			"key": "clientEmailId",
+			"value": ""
+		}
+	]
+}
