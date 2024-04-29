@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "description": "This repository contains a Postman collection for the Tool Rental API. It provides a set of endpoints to manage tools, orders, and authentication.",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/RutuNaikBhatt1/Tools_Postman_API.git"
@@ -20,5 +18,8 @@
     "axios": "^1.6.8",
     "playwright": "^1.43.1"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@playwright/test": "^1.43.1",
+    "@types/node": "^20.12.7"
+  }
 }
