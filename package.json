@@ -15,5 +15,10 @@
   "bugs": {
     "url": "https://github.com/RutuNaikBhatt1/Tools_Postman_API/issues"
   },
-  "homepage": "https://github.com/RutuNaikBhatt1/Tools_Postman_API#readme"
+  "homepage": "https://github.com/RutuNaikBhatt1/Tools_Postman_API#readme",
+  "dependencies": {
+    "axios": "^1.6.8",
+    "playwright": "^1.43.1"
+  },
+  "devDependencies": {}
 }
