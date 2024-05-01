@@ -12,9 +12,9 @@ jobs:
             run: mkdir TestArtifact
             # Install node on the runn
           - name: Install node
-            run: actions/setup-node@v4
+            uses: actions/setup-node@v4
             with: 
-            node-version: '20.x'
+              node-version: '20.x'
             # Install newman globally
           - name: Install newman
             run: npm install -g newman
