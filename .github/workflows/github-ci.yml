@@ -19,7 +19,9 @@ jobs:
               node-version: '20.x'
             # Install newman globally
           - name: Install newman
-            run: npm install -g newman
+            run: |
+              npm install -g newman
+              npm install -g newman-reporter-htmlextra
             # Run tests
           - name: Run tests
             run : newman run "postman_collection.json"
