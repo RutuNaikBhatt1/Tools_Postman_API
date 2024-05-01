@@ -1,35 +1,37 @@
 name: Automated API tests using Newman collection
+
 on:
   schedule:
     - cron: '0 0 * * *' # Runs every day at midnight UTC
   workflow_dispatch:
+
 jobs:
   test-e2e-api:
-        name: Run nightly
-        runs-on: ubuntu-latest
-        steps:
-          - uses: actions/checkout@v4
-            # Creates an artifact folder in workflow folder
-          # run: mkdir TestArtifact
-          # Create  test directory
-          - name: Create test results directory
-            run: mkdir test-results
-            # Install node on the run
-          - name: Install node
-            uses: actions/setup-node@v4
-            with: 
-              node-version: '20.x'
-            # Install newman globally
-          - name: Install newman
-            run: |
-              npm install -g newman
-              npm install -g newman-reporter-htmlextra
-            # Run tests
-          - name: Run tests
-            run : newman run "postman_collection.json" -r htmlextra --reporter-htmlextra-export testresults/htmlreport.html
-          
-          - name: Output results 
-            uses: actions/upload-artifact@v4
-            with:
-             name: Test Results
-             path: test-results
+    name: Run nightly
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Node.js and Newman
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Install Newman and HTML Extra reporter
+        run: |
+          npm install -g newman@5.x
+          npm install -g newman-reporter-htmlextra@4.x
+
+      - name: Run API tests
+        run: newman run "postman_collection.json" -r htmlextra --reporter-htmlextra-export ./test-results/htmlreport.html
+
+      - name: Create test results directory
+        run: mkdir -p test-results
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: Test Results
+          path: test-results
