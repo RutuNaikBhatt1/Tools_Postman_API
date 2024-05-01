@@ -35,3 +35,11 @@ jobs:
         with:
           name: Test Results
           path: test-results
+
+      - name: Send test results to Slack
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+        with:
+          text: "API test results are available at https://app.slack.com/test-results/htmlreport.html"
+          channel: "#qa-channel"
