@@ -55,6 +55,8 @@ Before running the tests, ensure that Node.js and npm are installed on your syst
 To install Newman globally, open a terminal and run the following command:
 `npm install -g newman`
 
+On Mac os, install "brew install newman"
+
 Once installed, verify the installation by running:
 `newman -v`
 
