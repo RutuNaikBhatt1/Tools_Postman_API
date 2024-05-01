@@ -10,8 +10,7 @@ jobs:
         steps:
           - uses: actions/checkout@v4
             # Creates an artifact folder in workflow folder
-          - name: Create a directory
-            run: mkdir TestArtifact
+          # run: mkdir TestArtifact
             # Install node on the runn
           - name: Install node
             uses: actions/setup-node@v4
